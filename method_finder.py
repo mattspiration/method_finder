@@ -10,7 +10,7 @@ methods_to_find = ['upload_file_from_param_to_s3', 'upload_file_from_url_to_s3',
                    'get_s3_public_url', 'get_s3_url']
 
 # Initialize an empty DataFrame
-df = pd.DataFrame(columns=['File Name', 'Method Found', 'Calling Method', 'Line Number', 'Parent Directory', 'Referencing Files'])
+df = pd.DataFrame(columns=['File Name', 'Method Found', 'Line Number', 'Parent Directory'])
 
 # Get the starting directory from the command line
 if len(sys.argv) > 1:
@@ -59,46 +59,29 @@ num_dir, num_files = determine_search_length(start_dir, '.rb')
 
 # Traverse the file system
 results = []
+files_searched = 0
 for root, dirs, files in os.walk(start_dir):
     tmp_dict = {}
     for file in files:
+        files_searched += 1
         if file.endswith('.rb'):  # Assuming we are looking for Python files
             with open(os.path.join(root, file), 'r') as f:
                 lines = f.readlines()
                 for i, line in enumerate(lines):
                     for method in methods_to_find:
-                        if method in line:
-                            # Find the calling method
-                            calling_method = re.findall(r'def (.+?)\(', line)
-                            if calling_method:
-                                calling_method = calling_method[0]
-                            else:
-                                calling_method = 'Unknown'
-                            
-                            # Find all files that reference the calling method
-                            referencing_files = []
-                            for r, d, fs in os.walk(start_dir):
-                                for f in fs:
-                                    if f.endswith('.rb'):
-                                        with open(os.path.join(r, f), 'r') as ff:
-                                            if calling_method in ff.read():
-                                                referencing_files.append(f)
-                            
-                            
-                            # Store the information in the DataFrame
-                            tmp_dict['File Name'] = file
-                            tmp_dict['Method Found'] = method
-                            tmp_dict['Calling Method'] = calling_method
-                            tmp_dict['Line Number'] = i + 1
-                            tmp_dict['Parent Directory'] = root
-                            tmp_dict['Referencing Files'] = []
-                            results.append(tmp_dict)
-                            tmp_dict = {}
+                        # Store the information in the DataFrame
+                        tmp_dict['File Name'] = file
+                        tmp_dict['Method Found'] = method
+                        tmp_dict['Line Number'] = i + 1
+                        tmp_dict['Parent Directory'] = root
+                        results.append(tmp_dict)
+                        tmp_dict = {}
 
-print(results)
+
 # Add the results to the DataFrame
 df = pd.concat([df, pd.DataFrame(results)], ignore_index=True)
 
 
 # Create a CSV of the DataFrame
 df.to_csv('method_references_s3.csv', index=False)
+print(f'Files Searched: {files_searched}')
