@@ -19,28 +19,6 @@ else:
     print("Please provide the starting directory as a command line argument.")
     sys.exit()
 
-def progress_bar(total):
-    # Initialize the progress
-    progress = 0
-
-    while progress <= total:
-        # Calculate the percentage of completion
-        percent_complete = (progress / total) * 100
-
-        # Create the progress bar
-        bar = '=' * int(percent_complete / 2)  # Each '=' represents 2% of the progress
-
-        # Print the progress bar with the percentage
-        sys.stdout.write("\r[%-50s] %d%%" % (bar, percent_complete))
-        sys.stdout.flush()
-
-        progress += 1
-        yield
-
-        # Simulate a delay
-        time.sleep(0.1)
-
-    print()
 
 def determine_search_length(dir_path, file_type):
     # Does an initial scan of the directory and counts the number
@@ -56,6 +34,7 @@ def determine_search_length(dir_path, file_type):
     return (dir_length, file_length)
 
 num_dir, num_files = determine_search_length(start_dir, '.rb')
+print(f'Will search {num_dir} directories and {num_files} files.')
 
 # Traverse the file system
 results = []
