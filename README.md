@@ -38,15 +38,15 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the script from the command line, providing the starting directory as a command line argument:
+Run the script from the command line, providing the starting directory as the first command line argument and a filename for the export csv as the second command line argument (do not include .csv in filename):
 
 ```bash
-python script.py /path/to/directory
+python script.py /path/to/directory file_name
 ```
 
 Replace `/path/to/directory` with the directory you want to start traversing.
 
-The script will create a progress bar in the command line to indicate its progress. When it's done, it will create a CSV file named `method_references_s3.csv` in the same directory. This file contains the following information for each method found:
+When it's done, it will create a CSV file named `filename.csv` in this directory. This file contains the following information for each method found:
 
 - Name of the file where the method is referenced
 - The method that was found

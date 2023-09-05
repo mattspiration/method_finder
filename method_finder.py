@@ -7,7 +7,7 @@ import pandas as pd
 # List of methods to find
 methods_to_find = ['upload_file_from_param_to_s3', 'upload_file_from_url_to_s3',
                    'upload_local_file_to_s3', 'archive_file_to_s3', 'download_file_from_s3',
-                   'get_s3_public_url', 'get_s3_url']
+                   'get_s3_public_url', 'get_s3_url', 's3']
 
 # Initialize an empty DataFrame
 df = pd.DataFrame(columns=['File Name', 'Method Found', 'Line Number', 'Parent Directory'])
@@ -15,6 +15,7 @@ df = pd.DataFrame(columns=['File Name', 'Method Found', 'Line Number', 'Parent D
 # Get the starting directory from the command line
 if len(sys.argv) > 1:
     start_dir = sys.argv[1]
+    file_name = sys.argv[2]
 else:
     print("Please provide the starting directory as a command line argument.")
     sys.exit()
@@ -61,7 +62,7 @@ for root, dirs, files in os.walk(start_dir):
 # Add the results to the DataFrame
 df = pd.concat([df, pd.DataFrame(results)], ignore_index=True)
 
-csv_name = f'{start_dir}_method_references.csv'
+
 # Create a CSV of the DataFrame
-df.to_csv("results.csv", index=False)
+df.to_csv(file_name+".csv", sep=',', index=False)
 print(f'Files Searched: {files_searched}')
